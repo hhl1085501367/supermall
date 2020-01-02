@@ -26,8 +26,9 @@
       isActive() {
         // /home -> item1(/home) = true
         // /home -> item1(/category) = false
-        // /home -> item1(/cart) = true
-        // /home -> item1(/profile) = true
+        // /home -> item1(/cart) = false
+        // /home -> item1(/profile) = false
+        // console.log(this.$route) 当前显示的路由
         return this.$route.path.indexOf(this.path) !== -1
       },
       activeStyle() {

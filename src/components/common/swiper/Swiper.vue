@@ -3,10 +3,11 @@
     <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
       <slot></slot>
     </div>
-    <!-- <slot name="indicator"></slot> -->
+    <slot name="indicator"></slot>
     <div class="indicator">
       <slot name="indicator" v-if="showIndicator && slideCount>1">
-        <div v-for="(item, index) in slideCount" :key="index" class="indi-item" :class="{active: index == currentIndex-1}"></div>
+        <div v-for="(item, index) in slideCount" :key="index" class="indi-item" :class="{active: index == currentIndex-1}">
+        </div>
       </slot>
     </div>
   </div>
@@ -47,13 +48,19 @@
       }
     },
     mounted() {
+      /**
+       * let swiperEl = document.querySelector('.swiper')
+       * let slideEls = swiperEl.getElementsByClassName('slide')
+       * 这样取slideEls可能取不到，因为slide还未加载到dom树上，所以要用定时器，
+       * 如果只设置为100ms也有可能取不到，因为slide越多，需要的加载时间越多
+       * 所以我这里设置了120ms
+       */
       setTimeout(() => {
         // 1.操作DOM，在前后添加slide
         this.handleDom()
-
         // 2.开启定时器
         this.startTimer()
-      }, 100);
+      }, 120);
     },
     methods: {
       /**
@@ -120,13 +127,12 @@
 
         // 2.保存个数
         this.slideCount = slideEls.length
-
+        
         // 3.如果大于1个, 那么在前后分别添加一个slide
         // 下面的判断其实没有必要，如果只有一个slide，这些操作都没有必要
         if(this.slideCount > 1) { 
           let cloneFirst = slideEls[0].cloneNode(true)
           let cloneLast = slideEls[this.slideCount - 1].cloneNode(true)
-
           // slidesEls是一个集合对象，不是数组，所以不能用push方法
           // console.log(typeof(slidesEls))
           // slideEls.push(cloneLast)
