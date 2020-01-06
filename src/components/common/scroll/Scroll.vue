@@ -68,5 +68,7 @@
 </script>
 
 <style scoped>
-
+  .wrapper {
+    overflow: hidden;
+  }
 </style>

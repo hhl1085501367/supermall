@@ -1,6 +1,5 @@
 <template>
   <div id="detail">
-    {{$store.state.cartList.length}}
     <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav"/>
     <scroll class="content" 
             ref="scroll" 
@@ -16,6 +15,8 @@
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
     <detail-bottom-bar @addToCart="addToCart"/>
+
+    <!-- <toast :message="hhh" :show=""/> -->
   </div>
 </template>
 
@@ -31,10 +32,12 @@
 
   import GoodsList from 'components/content/goods/GoodsList'
   import Scroll from 'components/common/scroll/Scroll'
+  // import Toast from 'components/common/toast/Toast'
   
-  import {getDetail, getRecommend, Goods, Shop, GoodsParam} from 'network/detail'
-  import {itemListenMixin, backTopMixin} from 'common/mixin'
-  import {debounce} from 'common/utils'
+  import { getDetail, getRecommend, Goods, Shop, GoodsParam } from 'network/detail'
+  import { itemListenMixin, backTopMixin } from 'common/mixin'
+  import { debounce } from 'common/utils'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'Detail',
@@ -64,7 +67,8 @@
       DetailBottomBar,
 
       GoodsList,
-      Scroll
+      Scroll,
+      // Toast
     },
     created() {
       // 1.保存传入的iid
@@ -114,6 +118,7 @@
       this.$bus.$off('itemImgLoad', this.itemImgListener)
     },
     methods: {
+      ...mapActions(['addCart']),
       imageLoad() { 
         this.refresh()
         // 将refresh函数放到data中，以后有监听函数需要用到防抖，就可以直接使用该函数，防止出现监听函数多次调用防抖函数，创建出多个防抖对象
@@ -167,7 +172,13 @@
 
         // 2.将商品添加到购物车
         // this.$store.commit('addCart', product)
-        this.$store.dispatch('addCart', product)
+        this.addCart(product).then(res => {
+          // console.log(res)
+          this.$toast.show(res)
+        })
+        // this.$store.dispatch('addCart', product).then(res => {
+        //   console.log(res)
+        // })
       }
     },
   }
@@ -176,7 +187,7 @@
 <style scoped>
   #detail {
     position: relative;
-    z-index: 9;
+    z-index: 1;
     background-color: #fff;
     height: 100vh;
   }

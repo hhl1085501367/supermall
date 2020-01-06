@@ -85,17 +85,21 @@
       
     },
     activated() {
-      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      // console.log(this.saveY)
+      // console.log(this.$refs.scroll.getScrollY())
+      
 
       // 刷新一次，以防出问题
       this.$refs.scroll.refresh()
+      // 要先刷新，再跳转到指定的位置，不然会出现问题，应该是BScroll内部会自动刷新导致的
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
     },
     deactivated() {
       // 保存y值
       this.saveY = this.$refs.scroll.getScrollY()
 
       // 取消监听函数
-      // 不能只传一个事件，那样所有页面的监听函数都会被取消掉
+      // 不能只传一个事件，那样所有页面，如果用到这个监听函数都会被取消掉
       
       this.$bus.$off('itemImgLoad', this.itemImgListener)
     },
